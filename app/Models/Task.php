@@ -15,4 +15,14 @@ class Task extends Model
     {
         return $this->hasMany(Tag::class, 'task_id', 'id');
     }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($task) {
+            $task->tags()->delete();  // Hapus tag yang terkait
+        });
+    }
+
 }

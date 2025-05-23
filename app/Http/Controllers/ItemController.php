@@ -13,15 +13,13 @@ class ItemController extends Controller
     public function insert(StoreItemRequest $request)
     {
         $raw = $request->input('item');
-
-        $mapping = $this->_mapping($raw);
+        $mapping = mapping_item($raw); // pakai helper
 
         $task = new Task();
         $task->name = $mapping['taskName'];
         $task->save();
 
         $tags = explode(',', $mapping['tagString']);
-
         foreach ($tags as $tagName) {
             $tagName = trim($tagName);
             if (!empty($tagName)) {
@@ -41,18 +39,5 @@ class ItemController extends Controller
         $to_delete->delete();
 
         return to_route('dashboard');
-    }
-
-    // Private function
-    private function _mapping($raw)
-    {
-        $parts = explode('|', $raw);
-        $taskName = trim($parts[0]);
-        $tagString = isset($parts[1]) ? trim($parts[1]) : '';
-
-        return [
-            'taskName' => $taskName,
-            'tagString' => $tagString,
-        ];
     }
 }
